@@ -4,6 +4,8 @@
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
 import random
+import time
+
 
 def print_hi(name):
     # Use a breakpoint in the code line below to debug your script.
@@ -45,8 +47,11 @@ def calculate(level):
     print(len(befehlsspeicher[0]))
     i = 0
     j = 0
-    for step in range(len(befehlsspeicher)):
-        currentStep = befehlsspeicher[step]
+  #  for step in range(len(befehlsspeicher)):
+    while i < len(befehlsspeicher):
+        time.sleep(0.5)
+        # currentStep = befehlsspeicher[step]
+        currentStep = befehlsspeicher[j]
         if (interuptLevel < level):
             calculate(interuptLevel)
         if (currentStep==None):
@@ -65,16 +70,20 @@ def calculate(level):
         elif (currentStep[0] == "div"):
             result[j] = currentChache1 / currentChache2
             print("Step: " + str(j) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1]) + "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "/" + str(currentChache2) + "=" + str(result[j]))
-        elif (currentStep[0] == "div"):
-            result[j] = currentChache1 / currentChache2
-            print("Step: " + str(j) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1]) + "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(
-                currentChache1) + "/" + str(currentChache2) + "=" + str(result[j]))
+        elif (currentStep[0] == "jump"):
+            result[j] = "jump to " + str(currentChache1)
+            print("Step: " + str(j) + "   Imput: opration = " + currentStep[0] + "  to program position = " + str(currentChache1) + " from memory position= " + str(currentStep[1]))
+            j = currentStep[1]-1
 
         j += 1
 
 
 
-def addProgram():
+def addProgram(program):
+    for step in program:
+            step.append(programCounter)
+
+
 
 
 
@@ -84,19 +93,24 @@ def addProgram():
 if __name__ == '__main__':
 
     interuptLevel = 0
-
-
     befehlsspeicher = [None] * 32
     speicher = random.sample(range(100),32)
     print(speicher)
     result = [0 for i in range(100)]
-    programs = [[["add", 1 , 2], ["mul", 3 , 4],["add" , 5, 3] , ["add", 1 , 6] , [ "sub", 7 , 4], ["div", 7 , 8] ,["sub", 7 , 4] ,["mul", 7 , 8]],[["add", 11 , 9], ["mul", 13 , 10],["add" , 15, 13] , ["add", 11 , 16] , [ "sub", 13 , 9], ["div", 13 , 16] ,["sub", 11 , 9] ,["mul", 11 , 12]]]
+    programCounter = 0
+    programs = []
+   # programs = [[["add", 1 , 2], ["mul", 3 , 4],["add" , 5, 3] , ["add", 1 , 6] , [ "sub", 7 , 4], ["div", 7 , 8] ,["sub", 7 , 4] ,["mul", 7 , 8]],[["add", 11 , 9], ["mul", 13 , 10],["add" , 15, 13] , ["add", 11 , 16] , [ "sub", 13 , 9], ["div", 13 , 16] ,["sub", 11 , 9] ,["mul", 11 , 12]]]
+    program1 = [["add", 1 , 2], ["mul", 3 , 4],["add" , 5, 3] , ["add", 1 , 6] , [ "sub", 7 , 4], ["div", 7 , 8] ,["sub", 7 , 4] ,["mul", 7 , 8]]
+    program2 = [["add", 11 , 9], ["mul", 13 , 10],["add" , 15, 13] , ["add", 11 , 16] , [ "sub", 13 , 9], ["div", 13 , 16] ,["sub", 11 , 9] , ["jump", 0, 0],["mul", 11 , 12]]
+    programs.append(program1)
+    programs.append(program2)
+    programs.append(program1)
     print(befehlsspeicher)
 
 
     update_comands(programs, 3)
 
-    calculate()
+    calculate(0)
 
     print("finish")
     print(befehlsspeicher)
