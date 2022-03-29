@@ -60,13 +60,13 @@ def calculate(level):
         currentChache2 = speicher[currentStep[2]]
         if(currentStep[0]=="add"):
             result[j] = currentChache1 + currentChache2
-            print("Step: " + str(j) + "   Program Number: " + str(currentStep[2]) + "   Program step: " + str(currentStep[3]) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1])+ "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "+" + str(currentChache2) + "=" + str(result[j]))
+            print("Step: " + str(j) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[2]) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1])+ "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "+" + str(currentChache2) + "=" + str(result[j]))
         elif (currentStep[0] == "sub"):
             result[j] = currentChache1 - currentChache2
-            print("Step: " + str(j) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1]) + "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "-" + str(currentChache2) + "=" + str(result[j]))
+            print("Step: " + str(j) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[2]) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1]) + "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "-" + str(currentChache2) + "=" + str(result[j]))
         elif (currentStep[0] == "mul"):
             result[j] = currentChache1 * currentChache2
-            print("Step: " + str(j) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1]) + "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "X" + str(currentChache2) + "=" + str(result[j]))
+            print("Step: " + str(j) +  "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[2]) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1]) + "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "X" + str(currentChache2) + "=" + str(result[j]))
         elif (currentStep[0] == "div"):
             result[j] = currentChache1 / currentChache2
             print("Step: " + str(j) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1]) + "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "/" + str(currentChache2) + "=" + str(result[j]))
@@ -80,14 +80,14 @@ def calculate(level):
 
 
 def addProgram(program, programCounter):
-    if len(program[0])==0:
+    if len(program[0])==3:
         k = 0
         for step in program:
-                print(step)
                 step.append(programCounter)
                 program
                 step.append(k)
                 k += 1
+                print(step)
     programs.append(program)
     programCounter = programCounter + 1
     return programCounter
