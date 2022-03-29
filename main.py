@@ -49,7 +49,7 @@ def calculate(level):
     j = 0
   #  for step in range(len(befehlsspeicher)):
     while i < len(befehlsspeicher):
-        time.sleep(0.5)
+        time.sleep(0.3)
         # currentStep = befehlsspeicher[step]
         currentStep = befehlsspeicher[j]
         if (interuptLevel < level):
@@ -60,7 +60,7 @@ def calculate(level):
         currentChache2 = speicher[currentStep[2]]
         if(currentStep[0]=="add"):
             result[j] = currentChache1 + currentChache2
-            print("Step: " + str(j) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1])+ "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "+" + str(currentChache2) + "=" + str(result[j]))
+            print("Step: " + str(j) + "   Program Number: " + str(currentStep[2]) + "   Program step: " + str(currentStep[3]) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1])+ "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "+" + str(currentChache2) + "=" + str(result[j]))
         elif (currentStep[0] == "sub"):
             result[j] = currentChache1 - currentChache2
             print("Step: " + str(j) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1]) + "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "-" + str(currentChache2) + "=" + str(result[j]))
@@ -79,9 +79,23 @@ def calculate(level):
 
 
 
-def addProgram(program):
-    for step in program:
-            step.append(programCounter)
+def addProgram(program, programCounter):
+    if len(program[0])==0:
+        k = 0
+        for step in program:
+                print(step)
+                step.append(programCounter)
+                program
+                step.append(k)
+                k += 1
+    programs.append(program)
+    programCounter = programCounter + 1
+    return programCounter
+
+
+
+
+
 
 
 
@@ -102,9 +116,16 @@ if __name__ == '__main__':
    # programs = [[["add", 1 , 2], ["mul", 3 , 4],["add" , 5, 3] , ["add", 1 , 6] , [ "sub", 7 , 4], ["div", 7 , 8] ,["sub", 7 , 4] ,["mul", 7 , 8]],[["add", 11 , 9], ["mul", 13 , 10],["add" , 15, 13] , ["add", 11 , 16] , [ "sub", 13 , 9], ["div", 13 , 16] ,["sub", 11 , 9] ,["mul", 11 , 12]]]
     program1 = [["add", 1 , 2], ["mul", 3 , 4],["add" , 5, 3] , ["add", 1 , 6] , [ "sub", 7 , 4], ["div", 7 , 8] ,["sub", 7 , 4] ,["mul", 7 , 8]]
     program2 = [["add", 11 , 9], ["mul", 13 , 10],["add" , 15, 13] , ["add", 11 , 16] , [ "sub", 13 , 9], ["div", 13 , 16] ,["sub", 11 , 9] , ["jump", 0, 0],["mul", 11 , 12]]
-    programs.append(program1)
-    programs.append(program2)
-    programs.append(program1)
+ #   programs.append(program1)
+  #  programs.append(program2)
+   # programs.append(program1)
+    programCounter = addProgram(program1, programCounter)
+    print(programCounter)
+    programCounter = addProgram(program2, programCounter)
+    print(programCounter)
+    programCounter = addProgram(program1, programCounter)
+    print(programCounter)
+
     print(befehlsspeicher)
 
 
