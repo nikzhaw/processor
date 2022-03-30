@@ -15,7 +15,11 @@ def print_hi(name):
 
 
 
+# scheduler
+# updates the command queue with all currently running programs
 
+# var programs = array with all running programs
+# var tasks = how many commands will be executed per period
 
 def update_comands(programs, tasks):
     length = sum(len(x) for x in programs)
@@ -38,6 +42,48 @@ def update_comands(programs, tasks):
         programPoint[currentProgram]+=1
         print(befehlsspeicher)
         i+=1
+
+
+
+
+# scheduler
+# updates the command queue with all currently running programs
+
+# var programs = array with all running programs
+# var tasks = how many commands will be executed per period
+
+def update_comands(programs, tasks):
+    length = sum(len(x) for x in programs)
+    i = 0
+    currentProgram = 0
+    programPoint = [0]*len(programs)
+
+    for step in range(length):
+        print(programs[currentProgram][programPoint[currentProgram]-1])
+        befehlsspeicher[i] = programs[currentProgram][programPoint[currentProgram]-1]
+
+        print((i + 1) % tasks)
+        if ((i+1) % tasks==0):
+
+            if (currentProgram<len(programs)-1):
+                currentProgram+=1
+            else:
+                currentProgram=0
+        programPoint[currentProgram]+=1
+        print(befehlsspeicher)
+        i+=1
+
+
+
+
+
+
+class Program:
+  def __init__(self, content , interuptLevel = 0):
+    self.program = content
+    self.programPointer = 0
+    self.interuptLevel  = interuptLevel
+
 
 
 
@@ -95,30 +141,27 @@ def addProgram(program, programCounter):
 
 
 
-
-
-
-
-
-
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-
+def initProcess():
+    global interuptLevel
     interuptLevel = 0
+    global befehlsspeicher
     befehlsspeicher = [None] * 32
-    speicher = random.sample(range(100),32)
+    global speicher
+    speicher = random.sample(range(100), 32)
     print(speicher)
+    global result
     result = [0 for i in range(100)]
     programCounter = 0
+    global programs
     programs = []
-   # programs = [[["add", 1 , 2], ["mul", 3 , 4],["add" , 5, 3] , ["add", 1 , 6] , [ "sub", 7 , 4], ["div", 7 , 8] ,["sub", 7 , 4] ,["mul", 7 , 8]],[["add", 11 , 9], ["mul", 13 , 10],["add" , 15, 13] , ["add", 11 , 16] , [ "sub", 13 , 9], ["div", 13 , 16] ,["sub", 11 , 9] ,["mul", 11 , 12]]]
-    program1 = [["add", 1 , 2], ["mul", 3 , 4],["add" , 5, 3] , ["add", 1 , 6] , [ "sub", 7 , 4], ["div", 7 , 8] ,["sub", 7 , 4] ,["mul", 7 , 8]]
-    program2 = [["add", 11 , 9], ["mul", 13 , 10],["add" , 15, 13] , ["add", 11 , 16] , [ "sub", 13 , 9], ["div", 13 , 16] ,["sub", 11 , 9] , ["jump", 0, 0],["mul", 11 , 12]]
- #   programs.append(program1)
-  #  programs.append(program2)
-   # programs.append(program1)
+    # programs = [[["add", 1 , 2], ["mul", 3 , 4],["add" , 5, 3] , ["add", 1 , 6] , [ "sub", 7 , 4], ["div", 7 , 8] ,["sub", 7 , 4] ,["mul", 7 , 8]],[["add", 11 , 9], ["mul", 13 , 10],["add" , 15, 13] , ["add", 11 , 16] , [ "sub", 13 , 9], ["div", 13 , 16] ,["sub", 11 , 9] ,["mul", 11 , 12]]]
+    program1 = [["add", 1, 2], ["mul", 3, 4], ["add", 5, 3], ["add", 1, 6], ["sub", 7, 4], ["div", 7, 8], ["sub", 7, 4],
+                ["mul", 7, 8]]
+    program2 = [["add", 11, 9], ["mul", 13, 10], ["add", 15, 13], ["add", 11, 16], ["sub", 13, 9], ["div", 13, 16],
+                ["sub", 11, 9], ["jump", 0, 0], ["mul", 11, 12]]
+    #   programs.append(program1)
+    #  programs.append(program2)
+    # programs.append(program1)
     programCounter = addProgram(program1, programCounter)
     print(programCounter)
     programCounter = addProgram(program2, programCounter)
@@ -128,13 +171,17 @@ if __name__ == '__main__':
 
     print(befehlsspeicher)
 
-
     update_comands(programs, 3)
 
     calculate(0)
 
     print("finish")
     print(befehlsspeicher)
+
+
+# Press the green button in the gutter to run the script.
+if __name__ == '__main__':
+    initProcess()
 
 
 
