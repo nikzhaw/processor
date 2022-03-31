@@ -4,6 +4,7 @@
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
 import random
+import threading
 import time
 
 
@@ -29,7 +30,7 @@ def update_comands(programs, tasks):
 
     for step in range(length):
    #     print(programs[currentProgram][programPoint[currentProgram]-1])
-        print(programs[currentProgram][programPoint[currentProgram]-1])
+   #     print(programs[currentProgram][programPoint[currentProgram]-1])
         befehlsspeicher[i] = programs[currentProgram][programPoint[currentProgram]-1]
 
         print((i + 1) % tasks)
@@ -90,31 +91,30 @@ class Program:
 
 
 def calculate(currentStep, level):
+        global cycle
         if (interuptLevel < level):
             calculate(interuptLevel)
         if (currentStep==None):
             return
         currentChache1 = speicher[currentStep[1]]
         currentChache2 = speicher[currentStep[2]]
-        print(currentStep)
         if(currentStep[0]=="add"):
-            result[cycle] = currentChache1 + currentChache2
+            result.append(currentChache1 + currentChache2)
             print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[2]) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1])+ "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "+" + str(currentChache2) + "=" + str(result[cycle]))
         elif (currentStep[0] == "sub"):
-            result[cycle] = currentChache1 - currentChache2
+            result.append(currentChache1 - currentChache2)
             print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[2]) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1]) + "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "-" + str(currentChache2) + "=" + str(result[cycle]))
         elif (currentStep[0] == "mul"):
-            result[cycle] = currentChache1 * currentChache2
+            result.append(currentChache1 * currentChache2)
             print("Step: " + str(cycle) +  "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[2]) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1]) + "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "X" + str(currentChache2) + "=" + str(result[cycle]))
         elif (currentStep[0] == "div"):
-            result[cycle] = currentChache1 / currentChache2
-            print("Step: " + str(cycle) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1]) + "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "/" + str(currentChache2) + "=" + str(result[cycle]))
-        elif (currentStep[0] == "cycleump"):
-            result[cycle] = "jump to " + str(currentChache1)
-            print("Step: " + str(cycle) + "   Imput: opration = " + currentStep[0] + "  to program position = " + str(currentChache1) + " from memory position= " + str(currentStep[1]))
+            result.append(currentChache1 / currentChache2)
+            print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[2]) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1]) + "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "/" + str(currentChache2) + "=" + str(result[cycle]))
+        elif (currentStep[0] == "jump"):
+            result.append("jump to " + str(currentChache1))
+            print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[2]) + "   Imput: opration = " + currentStep[0] + "  to program position = " + str(currentChache1) + " from memory position= " + str(currentStep[1]))
         time.sleep(0.3)
         cycle += 1
-        print(str(cycle))
         #
             # j = currentStep[1]-1
 
@@ -129,8 +129,6 @@ def addProgram(program):
             step.append(len(programs))
             step.append(k)
             k += 1
-            print(step)
-            print("aaa")
     programs.append(Program(program))
     return program
 
@@ -139,7 +137,7 @@ def addProgram(program):
 
 def initProcess():
     global cycle
-    cycle = 1
+    cycle = 0
     global interuptLevel
     interuptLevel = 0
     global befehlsspeicher
@@ -148,7 +146,7 @@ def initProcess():
     speicher = random.sample(range(100), 32)
     print(speicher)
     global result
-    result = [0 for i in range(100)]
+    result = []
     programCounter = 0
     global programs
     programs = []
@@ -179,11 +177,54 @@ def initProcess():
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    initProcess()
+    cpu = threading.Thread(target=initProcess())
+  #  pic = threading.Thread(target=interrupt_controller_thread)
+
+    cpu.start()
+  #  pic.start()
+  #  initProcess()
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+def interrupt_controller_thread():
+  while True:
+    global interrupt
+    time.sleep(interrupt_interval)
+    print("Triggering interrupt")
+    interrupt=True
+
+def cpu_handle_interrupt():
+    global interrupt
+
+    if interrupt == True:
+      print("Woah I got an interrupt")
+      # now act on the interrupt...
+      interrupt = False
+
+def cpu_thread():
+  while True:
+    # Read, Eval, (optional: Print), Loop
+    print("I am reading the next instruction")
+    print("I am evaluating the instruction")
+    time.sleep(1) # python threading doesn't really work
+    cpu_handle_interrupt()
+
+cpu = threading.Thread( target = cpu_thread )
+pic = threading.Thread( target = interrupt_controller_thread )
+
+cpu.start()
+pic.start()
 
 
 
