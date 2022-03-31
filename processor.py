@@ -8,10 +8,6 @@ import threading
 import time
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Strg+F8 to toggle the breakpoint.
-
 
 
 
@@ -29,8 +25,6 @@ def update_comands(programs, tasks):
     programPoint = [0]*len(programs)
 
     for step in range(length):
-   #     print(programs[currentProgram][programPoint[currentProgram]-1])
-   #     print(programs[currentProgram][programPoint[currentProgram]-1])
         befehlsspeicher[i] = programs[currentProgram][programPoint[currentProgram]-1]
 
         print((i + 1) % tasks)
@@ -57,18 +51,24 @@ def scheduler(programs, tasks):
   #  length = sum(len(x) for x in programs)
     i = 0
     currentProgram = 0
-
     while(True):
-        for prog in programs:
-                for step in prog.program:
-                    calculate(step, 0)
-                    prog.pointer += 1
+        if (len(programs)<1):
+            calculate(["idle", 0 ,0 ,0 ,0], 0)
+      #  for prog in programs:
+        while currentProgram < len(programs):
+                while programs[currentProgram].pointer < len(programs[currentProgram].program):
+   #                 print("      " + str(programs[currentProgram].pointer) + "      " + str(programs[currentProgram].program[programs[currentProgram].pointer]))
+                    calculate(programs[currentProgram].program[programs[currentProgram].pointer], 0)
+                    programs[currentProgram].pointer += 1
                     if ((i + 1) % tasks == 0):
                         if (currentProgram < len(programs) - 1):
-                             currentProgram += 1
+                            print(currentProgram)
+                            currentProgram += 1
                         else:
                           currentProgram = 0
                     i += 1
+                if (programs[currentProgram].pointer == len(programs[currentProgram].program)):
+                    programs.remove(programs[currentProgram])
 
 
 
@@ -100,20 +100,28 @@ def calculate(currentStep, level):
         currentChache2 = speicher[currentStep[2]]
         if(currentStep[0]=="add"):
             result.append(currentChache1 + currentChache2)
-            print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[2]) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1])+ "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "+" + str(currentChache2) + "=" + str(result[cycle]))
+            print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1])+ "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "+" + str(currentChache2) + "=" + str(result[cycle]))
         elif (currentStep[0] == "sub"):
             result.append(currentChache1 - currentChache2)
-            print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[2]) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1]) + "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "-" + str(currentChache2) + "=" + str(result[cycle]))
+            print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1]) + "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "-" + str(currentChache2) + "=" + str(result[cycle]))
         elif (currentStep[0] == "mul"):
             result.append(currentChache1 * currentChache2)
-            print("Step: " + str(cycle) +  "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[2]) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1]) + "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "X" + str(currentChache2) + "=" + str(result[cycle]))
+            print("Step: " + str(cycle) +  "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1]) + "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "X" + str(currentChache2) + "=" + str(result[cycle]))
         elif (currentStep[0] == "div"):
             result.append(currentChache1 / currentChache2)
-            print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[2]) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1]) + "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "/" + str(currentChache2) + "=" + str(result[cycle]))
+            print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1]) + "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "/" + str(currentChache2) + "=" + str(result[cycle]))
         elif (currentStep[0] == "jump"):
             result.append("jump to " + str(currentChache1))
-            print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[2]) + "   Imput: opration = " + currentStep[0] + "  to program position = " + str(currentChache1) + " from memory position= " + str(currentStep[1]))
+            print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + "  to program position = " + str(currentChache1) + " from memory position= " + str(currentStep[1]))
+        elif (currentStep[0] == "start"):
+            result.append("program number " + str(currentChache1) + "started")
+
+            print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + "  program number = " + str(currentChache1))
+        elif (currentStep[0] == "idle"):
+            print("Step: " + str(0) + "   Processor Number: " + str(1) + "   is idle")
+            cycle -= 1
         time.sleep(0.3)
+
         cycle += 1
         #
             # j = currentStep[1]-1
@@ -162,7 +170,7 @@ def initProcess():
     print(programCounter)
     programCounter = addProgram(program2)
     print(programCounter)
-    programCounter = addProgram(program1)
+   # programCounter = addProgram(program1)
     print(programCounter)
 
     print(befehlsspeicher)
