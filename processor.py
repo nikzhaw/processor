@@ -3,29 +3,24 @@
 import random
 import threading
 import time
-from colorama import init
-from termcolor import colored
-
-init()
-
-print(colored("This is in red color", "red"))
-print(colored("This is in yellow color", "yellow"))
-print(colored("This is in blue color", "blue"))
-print(colored("This is in cyan color", "cyan"))
-print(colored("This is in green color", "white"))
-print(colored("This is in magenta color", "magenta"))
 
 
 
 
-W  = '\033[0m'  # white (normal)
-R  = '\033[31m' # red
-G  = '\033[32m' # green
-O  = '\033[33m' # orange
-B  = '\033[34m' # blue
-P  = '\033[35m'
 
-print(R+"hello how are you"+W)
+
+color = [None] * 16
+color[15] = '\033[34m' # blue
+color[14] = '\033[31m' # red
+color[13] = '\033[32m' # green
+color[12] = '\033[30m' # blue
+color[11] = '\033[35m' # purple
+color[0] = '\033[0m' # white (normal)
+white = '\033[0m'  # white (normal)
+
+
+
+
 
 
 
@@ -153,7 +148,7 @@ def calculate(currentStep, level):
                 programs[currentProgram].pointer = currentChache1
         elif (currentStep[0] == "print"):
             result.append("echo: " + currentChache1)
-            print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + "  echo: " + currentChache1)
+            print(color[level] + "Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + "  echo: " + currentChache1 + color[0])
         elif (currentStep[0] == "start"):
             if (currentChache1 < len(avaiblePrograms)):
                 result.append("program number " + str(currentChache1) + "started")
@@ -238,7 +233,7 @@ def startSystem():
 def runPrograms():
     program1 = generateProgram(10)
     addProgram(program1)
-    time.sleep(1.5)
+    time.sleep(1.5)d
     program2 = generateProgram(10)
     addProgram(program2)
     time.sleep(8)
@@ -246,6 +241,12 @@ def runPrograms():
     addProgram(program3)
     time.sleep(1.5)
     startProgram(1)
+    time.sleep(1)
+    program4 = [["add", 1, 2], ["mul", 3, 4], ["add", 5, 3], ["add", 1, 6], ["sub", 7, 4], ["div", 7, 8], ["sub", 7, 4],["mul", 7, 8],["start", 6, 0],["start", 16, 0]]
+    addProgram(program4)
+    time.sleep(1)
+    program5 = [["add", 11, 9], ["mul", 13, 10], ["add", 15, 13], ["add", 11, 16], ["sub", 13, 9], ["div", 13, 16],["sub", 11, 9], ["jump", 16, 0], ["mul", 11, 12]]
+    addProgram(program5)
 
 
 
@@ -277,7 +278,7 @@ def runPrograms3():
     generateProgram(16)
 
     # programs = [[["add", 1 , 2], ["mul", 3 , 4],["add" , 5, 3] , ["add", 1 , 6] , [ "sub", 7 , 4], ["div", 7 , 8] ,["sub", 7 , 4] ,["mul", 7 , 8]],[["add", 11 , 9], ["mul", 13 , 10],["add" , 15, 13] , ["add", 11 , 16] , [ "sub", 13 , 9], ["div", 13 , 16] ,["sub", 11 , 9] ,["mul", 11 , 12]]]
-    program1 = [["add", 1, 2], ["mul", 3, 4], ["add", 5, 3], ["add", 1, 6], ["sub", 7, 4], ["div", 7, 8], ["sub", 7, 4], ["mul", 7, 8]]
+
 
     program3 = generateProgram(10)
 
@@ -287,7 +288,7 @@ def runPrograms3():
 
 
 
-    program2 = [["add", 11, 9], ["mul", 13, 10], ["add", 15, 13], ["add", 11, 16], ["sub", 13, 9], ["div", 13, 16],["sub", 11, 9], ["jump", 0, 0], ["mul", 11, 12]]
+
 
 
 
