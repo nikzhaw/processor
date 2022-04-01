@@ -57,7 +57,6 @@ def scheduler(programs, tasks):
       #  for prog in programs:
         while currentProgram < len(programs):
                 while programs[currentProgram].pointer < len(programs[currentProgram].program):
-   #                 print("      " + str(programs[currentProgram].pointer) + "      " + str(programs[currentProgram].program[programs[currentProgram].pointer]))
                     calculate(programs[currentProgram].program[programs[currentProgram].pointer], 0)
                     programs[currentProgram].pointer += 1
                     if ((i + 1) % tasks == 0):
@@ -72,6 +71,17 @@ def scheduler(programs, tasks):
 
 
 
+
+def generateProgram(size):
+    comands = ["add", "sub", "mul", "div"]
+    program = []
+    for step in range(size):
+        step = []
+        step.append(random.choice(list(comands)))
+        step.append(random.randint(1, 31))
+        step.append(random.randint(1, 31))
+        program.append(step)
+    return program
 
 
 
@@ -113,10 +123,15 @@ def calculate(currentStep, level):
         elif (currentStep[0] == "jump"):
             result.append("jump to " + str(currentChache1))
             print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + "  to program position = " + str(currentChache1) + " from memory position= " + str(currentStep[1]))
+        elif (currentStep[0] == "print"):
+            result.append("echo: " + str(currentChache1))
+            print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + result)
         elif (currentStep[0] == "start"):
-            result.append("program number " + str(currentChache1) + "started")
-
-            print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + "  program number = " + str(currentChache1))
+            if (currentChache1 < len(avaiblePrograms)):
+                result.append("program number " + str(currentChache1) + "started")
+                print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + "  program number = " + str(currentChache1))
+            else:
+                print("program number: " + str(currentChache1) + " not avaible")
         elif (currentStep[0] == "idle"):
             print("Step: " + str(0) + "   Processor Number: " + str(1) + "   is idle")
             cycle -= 1
@@ -130,15 +145,26 @@ def calculate(currentStep, level):
 
 
 
-def addProgram(program):
+def addProgram(program, interupt = 0):
+
+
     if len(program[0])==3:
         k = 0
         for step in program:
             step.append(len(programs))
             step.append(k)
             k += 1
-    programs.append(Program(program))
-    return program
+    pg = Program((program, interupt))
+    avaiblePrograms.append(pg)
+    if (interupt > 0):
+        programs.append(Program(pg))
+    return pg
+
+
+def startProgram(number):
+    pg = avaiblePrograms[number]
+    programs.append(pg, pg.interuptLevel)
+
 
 
 
@@ -148,24 +174,38 @@ def initProcess():
     cycle = 0
     global interuptLevel
     interuptLevel = 0
-    global befehlsspeicher
-    befehlsspeicher = [None] * 32
+#    global befehlsspeicher
+#    befehlsspeicher = [None] * 32
     global speicher
     speicher = random.sample(range(100), 32)
-    print(speicher)
     global result
     result = []
-    programCounter = 0
+#    programCounter = 0
     global programs
     programs = []
+    global avaiblePrograms
+    avaiblePrograms = []
+
+    generateProgram(16)
+
     # programs = [[["add", 1 , 2], ["mul", 3 , 4],["add" , 5, 3] , ["add", 1 , 6] , [ "sub", 7 , 4], ["div", 7 , 8] ,["sub", 7 , 4] ,["mul", 7 , 8]],[["add", 11 , 9], ["mul", 13 , 10],["add" , 15, 13] , ["add", 11 , 16] , [ "sub", 13 , 9], ["div", 13 , 16] ,["sub", 11 , 9] ,["mul", 11 , 12]]]
     program1 = [["add", 1, 2], ["mul", 3, 4], ["add", 5, 3], ["add", 1, 6], ["sub", 7, 4], ["div", 7, 8], ["sub", 7, 4],
                 ["mul", 7, 8]]
-    program2 = [["add", 11, 9], ["mul", 13, 10], ["add", 15, 13], ["add", 11, 16], ["sub", 13, 9], ["div", 13, 16],
-                ["sub", 11, 9], ["jump", 0, 0], ["mul", 11, 12]]
-    #   programs.append(program1)
-    #  programs.append(program2)
-    # programs.append(program1)
+    program2 = [["add", 11, 9], ["mul", 13, 10], ["add", 15, 13], ["add", 11, 16], ["sub", 13, 9], ["div", 13, 16],["sub", 11, 9], ["jump", 0, 0], ["mul", 11, 12]]
+
+
+    isr1 = [["print","Fatel Error",0],["print","BlueScreen",0],["print","!!!!!!!!!",0]]
+    isr2 = [["print", "Program tries division with 0",0],["print", "Division with 0 is not allowed", 0],["print","Process killed", 0],["print","!!!!!!!!!",0]]
+    isr3 = [["print", "Jump adress is out of range", 0],["print", "Jump will not be executed", 0],["print", "Process is continue", 0],["print", "!!!!!!!!!", 0]]
+    isr4 = [["print", "Program is not avaible", 0],["print", "Program has to be loaded", 0],["print", "Process is continue", 0],["print", "!!!!!!!!!", 0]]
+
+
+
+
+
+
+
+
     programCounter = addProgram(program1)
     print(programCounter)
     programCounter = addProgram(program2)
@@ -173,7 +213,7 @@ def initProcess():
    # programCounter = addProgram(program1)
     print(programCounter)
 
-    print(befehlsspeicher)
+   # print(befehlsspeicher)
 
     scheduler(programs, 3)
 
