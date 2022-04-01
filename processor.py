@@ -3,10 +3,39 @@
 import random
 import threading
 import time
+from colorama import init
+from termcolor import colored
+
+init()
+
+print(colored("This is in red color", "red"))
+print(colored("This is in yellow color", "yellow"))
+print(colored("This is in blue color", "blue"))
+print(colored("This is in cyan color", "cyan"))
+print(colored("This is in green color", "white"))
+print(colored("This is in magenta color", "magenta"))
 
 
 
 
+W  = '\033[0m'  # white (normal)
+R  = '\033[31m' # red
+G  = '\033[32m' # green
+O  = '\033[33m' # orange
+B  = '\033[34m' # blue
+P  = '\033[35m'
+
+print(R+"hello how are you"+W)
+
+
+
+
+
+
+
+# checks if there is a interupt in the queue with a higher interput level than the current task
+# if there is one it wil be excudet without schedule
+# except another interupt will be triggered with a higher level
 
 def interruptController(currentLevel):
     level = currentLevel
@@ -16,6 +45,7 @@ def interruptController(currentLevel):
             level = program.interuptLevel
             programNumber = i
         i += 1
+    # start interupt, if found a higher interupt
     if (level>currentLevel):
         for steps in programs[programNumber].program:
             calculate(steps, level)
@@ -55,7 +85,7 @@ def scheduler(programs, tasks):
 
 
 
-
+# generates a program with "add", "sub", "mul", "div" according the length
 
 def generateProgram(size):
     comands = ["add", "sub", "mul", "div"]
@@ -72,7 +102,7 @@ def generateProgram(size):
 
 
 
-
+# class for programs
 
 class Program:
   def __init__(self, content, interuptLevel = 0):
@@ -84,7 +114,7 @@ class Program:
 
 
 
-
+# cpu with commands "add", "sub", "mul", "div", "print", "jump", "start"
 
 def calculate(currentStep, level):
         global cycle
@@ -129,15 +159,15 @@ def calculate(currentStep, level):
                 result.append("program number " + str(currentChache1) + "started")
                 print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + "  program number = " + str(currentChache1))
             else:
-                print("program number: " + str(currentChache1) + " not avaible")
+                startProgram(3)
+              #  print("program number: " + str(currentChache1) + " not avaible")
         elif (currentStep[0] == "idle"):
             print("Step: " + str(0) + "   Processor Number: " + str(1) + "   is idle")
             cycle -= 1
         time.sleep(0.3)
 
         cycle += 1
-        #
-            # j = currentStep[1]-1
+
 
 
 
@@ -186,6 +216,8 @@ def startSystem():
     global avaiblePrograms
     avaiblePrograms = []
 
+    # load interupts
+
     isr1 = [["print","Fatel Error",0],["print","BlueScreen",0],["print","!!!!!!!!!",0]]
     addProgram(isr1, 15)
     isr2 = [["print", "Program tries division with 0",0],["print", "Division with 0 is not allowed", 0],["print","Process killed", 0],["print","!!!!!!!!!",0]]
@@ -197,18 +229,19 @@ def startSystem():
     isr5 = generateProgram(10)
     addProgram(isr5, 11)
 
-
+    # start scheduler
     scheduler(programs, 3)
 
 
-def runPrograms2():
-    time.sleep(1)
+
+
+def runPrograms():
     program1 = generateProgram(10)
     addProgram(program1)
-    time.sleep(2.5)
+    time.sleep(1.5)
     program2 = generateProgram(10)
     addProgram(program2)
-    time.sleep(10)
+    time.sleep(8)
     program3 = generateProgram(30)
     addProgram(program3)
     time.sleep(1.5)
@@ -217,7 +250,7 @@ def runPrograms2():
 
 
 
-def runPrograms():
+def runPrograms3():
     time.sleep(2)
     program3 = generateProgram(16)
     addProgram(program3)
@@ -268,13 +301,24 @@ def runPrograms():
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    cpu = threading.Thread(target=startSystem)
+
+    # settings:
+    global tasks
+    # how many tasks the scheduler will execute before switching
+    tasks = 3
+    global clock
+    # cpu clock in seconds
+    clock = 0.3
+
+
+    system = threading.Thread(target=startSystem)
     user = threading.Thread(target=runPrograms)
-    cpu.start()
+    system.start()
+    time.sleep(0.5)
+
+    # start user programs
     user.start()
 
-  #  cpu.join()
-  #  user.join()
 
 
 
