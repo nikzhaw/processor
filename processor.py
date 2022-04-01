@@ -1,7 +1,4 @@
-# This is a sample Python script.
-
-# Press Umschalt+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+#!/usr/bin/python3
 
 import random
 import threading
@@ -10,6 +7,20 @@ import time
 
 
 
+
+def interruptController(currentLevel):
+    level = currentLevel
+    i = 0
+    for program in programs:
+        if(program.interuptLevel > level):
+            level = program.interuptLevel
+            programNumber = i
+        i += 1
+    if (level>currentLevel):
+        for steps in programs[programNumber].program:
+            calculate(steps, level)
+            programs[programNumber].pointer += 1
+        programs.remove(programs[programNumber])
 
 
 
@@ -22,11 +33,11 @@ import time
 def scheduler(programs, tasks):
   #  length = sum(len(x) for x in programs)
     i = 0
+    global currentProgram
     currentProgram = 0
     while(True):
         if (len(programs)<1):
             calculate(["idle", 0 ,0 ,0 ,0], 0)
-      #  for prog in programs:
         while currentProgram < len(programs):
                 while programs[currentProgram].pointer < len(programs[currentProgram].program):
                     calculate(programs[currentProgram].program[programs[currentProgram].pointer], 0)
@@ -39,6 +50,9 @@ def scheduler(programs, tasks):
                     i += 1
                 if (programs[currentProgram].pointer == len(programs[currentProgram].program)):
                     programs.remove(programs[currentProgram])
+                    if (currentProgram > 0):
+                        currentProgram -= 1
+
 
 
 
@@ -64,7 +78,7 @@ class Program:
   def __init__(self, content, interuptLevel = 0):
     self.program = content
     self.pointer = 0
-    self.interuptLevel  = interuptLevel
+    self.interuptLevel = interuptLevel
 
 
 
@@ -74,9 +88,8 @@ class Program:
 
 def calculate(currentStep, level):
         global cycle
-
-        if (interuptLevel < level):
-            calculate(interuptLevel)
+        global currentProgram
+        interruptController(level)
         if (currentStep==None):
             return
         if(type(currentStep[1]) == int):
@@ -95,15 +108,22 @@ def calculate(currentStep, level):
             result.append(currentChache1 * currentChache2)
             print("Step: " + str(cycle) +  "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1]) + "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "X" + str(currentChache2) + "=" + str(result[cycle]))
         elif (currentStep[0] == "div"):
-            result.append(currentChache1 / currentChache2)
-            print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1]) + "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "/" + str(currentChache2) + "=" + str(result[cycle]))
+            if (currentChache2 == 0):
+                print(currentChache2)
+                startProgram(1)
+            else:
+                result.append(currentChache1 / currentChache2)
+                print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1]) + "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "/" + str(currentChache2) + "=" + str(result[cycle]))
         elif (currentStep[0] == "jump"):
-            result.append("jump to " + str(currentChache1))
-            print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + "  to program position = " + str(currentChache1) + " from memory position= " + str(currentStep[1]))
+            if (currentStep[0]+1 > len(programs[currentProgram].program)):
+                startProgram(2)
+            else:
+                result.append("jump to " + str(currentChache1))
+                print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + "  to program position = " + str(currentChache1) + " from memory position= " + str(currentStep[1]))
+                programs[currentProgram].pointer = currentChache1
         elif (currentStep[0] == "print"):
             result.append("echo: " + currentChache1)
             print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + "  echo: " + currentChache1)
-
         elif (currentStep[0] == "start"):
             if (currentChache1 < len(avaiblePrograms)):
                 result.append("program number " + str(currentChache1) + "started")
@@ -130,8 +150,7 @@ def addProgram(program, interupt = 0):
             step.append(len(programs))
             step.append(k)
             k += 1
-
-    pg = Program((program))
+    pg = Program(program, interupt)
     avaiblePrograms.append(pg)
     if (interupt < 1):
         programs.append(pg)
@@ -140,6 +159,8 @@ def addProgram(program, interupt = 0):
 
 def startProgram(number):
     pg = avaiblePrograms[number]
+    for step in pg.program:
+        step[3] = len(programs)
     programs.append(pg)
 
 
@@ -177,8 +198,6 @@ def startSystem():
     addProgram(isr5, 11)
 
 
-
-
     scheduler(programs, 3)
 
 
@@ -191,6 +210,7 @@ def runPrograms2():
     addProgram(program2)
     time.sleep(10)
     program3 = generateProgram(30)
+    addProgram(program3)
     time.sleep(1.5)
     startProgram(1)
 
@@ -198,9 +218,11 @@ def runPrograms2():
 
 
 def runPrograms():
-    print("eeee")
     time.sleep(2)
-    startProgram(1)
+    program3 = generateProgram(16)
+    addProgram(program3)
+    time.sleep(2)
+    startProgram(0)
 
 
 
