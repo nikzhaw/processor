@@ -114,6 +114,7 @@ class Program:
 def calculate(currentStep, level):
         global cycle
         global currentProgram
+        print(str(len(result))+ "   " + str(cycle) + "    " + currentStep[0])
         interruptController(level)
         if (currentStep==None):
             return
@@ -128,21 +129,23 @@ def calculate(currentStep, level):
             print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1])+ "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "+" + str(currentChache2) + "=" + str(result[cycle]))
         elif (currentStep[0] == "sub"):
             result.append(currentChache1 - currentChache2)
-            print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1]) + "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "-" + str(currentChache2) + "=" + str(result[cycle]))
+            print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1]) + "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "-" + str(currentChache2) + "=" + str(currentChache1 - currentChache2))
         elif (currentStep[0] == "mul"):
             result.append(currentChache1 * currentChache2)
-            print("Step: " + str(cycle) +  "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1]) + "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "X" + str(currentChache2) + "=" + str(result[cycle]))
+            print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1]) + "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "X" + str(currentChache2) + "=" + str(currentChache1 * currentChache2))
         elif (currentStep[0] == "div"):
             if (currentChache2 == 0):
-                print(currentChache2)
+                result.append("Error : div0")
                 startProgram(1)
             else:
                 result.append(currentChache1 / currentChache2)
-                print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1]) + "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "/" + str(currentChache2) + "=" + str(result[cycle]))
+                print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + "  Value 1 = " + str(currentChache1) + " from memory position= " + str(currentStep[1]) + "  Value 2 = " + str(currentChache2) + " from memory position = " + str(currentStep[2]) + "  operation = " + str(currentChache1) + "/" + str(currentChache2) + "=" + str(currentChache1 / currentChache2))
         elif (currentStep[0] == "jump"):
-            if (currentStep[0]+1 > len(programs[currentProgram].program)):
+            if (currentStep[1]+1 > len(programs[currentProgram].program)):
+                result.append("jump to " + str(currentChache1) + " not possible")
                 startProgram(2)
             else:
+                result.append("jump to " + str(currentChache1))
                 result.append("jump to " + str(currentChache1))
                 print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + "  to program position = " + str(currentChache1) + " from memory position= " + str(currentStep[1]))
                 programs[currentProgram].pointer = currentChache1
@@ -154,8 +157,8 @@ def calculate(currentStep, level):
                 result.append("program number " + str(currentChache1) + "started")
                 print("Step: " + str(cycle) + "   Program Number: " + str(currentStep[3]) + "   Program step: " + str(currentStep[4]) + "   Imput: opration = " + currentStep[0] + "  program number = " + str(currentChache1))
             else:
+                result.append("Error : not avaible")
                 startProgram(3)
-              #  print("program number: " + str(currentChache1) + " not avaible")
         elif (currentStep[0] == "idle"):
             print("Step: " + str(0) + "   Processor Number: " + str(1) + "   is idle")
             cycle -= 1
@@ -233,7 +236,7 @@ def startSystem():
 def runPrograms():
     program1 = generateProgram(10)
     addProgram(program1)
-    time.sleep(1.5)d
+    time.sleep(1.5)
     program2 = generateProgram(10)
     addProgram(program2)
     time.sleep(8)
@@ -242,7 +245,7 @@ def runPrograms():
     time.sleep(1.5)
     startProgram(1)
     time.sleep(1)
-    program4 = [["add", 1, 2], ["mul", 3, 4], ["add", 5, 3], ["add", 1, 6], ["sub", 7, 4], ["div", 7, 8], ["sub", 7, 4],["mul", 7, 8],["start", 6, 0],["start", 16, 0]]
+    program4 = [["add", 1, 2], ["mul", 3, 4], ["add", 5, 3], ["add", 1, 6], ["sub", 7, 4], ["div", 7, 8], ["sub", 7, 4],["mul", 7, 8]] #,["start", 6, 0],["start", 16, 0]]
     addProgram(program4)
     time.sleep(1)
     program5 = [["add", 11, 9], ["mul", 13, 10], ["add", 15, 13], ["add", 11, 16], ["sub", 13, 9], ["div", 13, 16],["sub", 11, 9], ["jump", 16, 0], ["mul", 11, 12]]
